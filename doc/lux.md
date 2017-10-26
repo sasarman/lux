@@ -1,7 +1,7 @@
 Lux - LUcid eXpect scripting
 ============================
 
-Version 1.18 - 2017-10-30
+Version 1.18 - 2017-12-13
 
 * [Introduction](#../README)
 * [Concepts](#main_concepts)
@@ -1683,76 +1683,9 @@ Here follow the output from the enclosed example test suite under
 Evaluate `lux examples`
 
 >     .../lux> lux examples
->     summary log       : /Users/hmattsso/dev/lux/lux_logs/run_2017_10_26_12_58_28_196619/lux_summary.log
->     test case         : examples/calc.lux
->     progress          : ..:..:..:...:..:.:.:....:..:..:.:..(....:..:.:.:...)(.:..:..)...:..:..:..(..:..)..(..:.:..)(...:..:..:...)(.:..:..)..(.:..:..)......:..:...
->     result            : SUCCESS
->     test case         : examples/error.lux
->     result            : FAIL as required variable MAKE is not set
->     test case         : examples/fail.lux
->     progress          : ..:..:..:...:..:.:.:..:..:.:....:..:..32C..:..:..:..:..:..:.:..:.:..:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.
->     result            : FAIL at 32
->     expected*
->     	19
->     actual match_timeout
->     	
->     	3> 5+13.
->     	18
->     	4> 
->     diff
->     	- 19
->     	+ 
->     	+ 3> 5+13.
->     	+ 18
->     	+ 4> 
->     	
->     test case         : examples/intro.lux
->     progress          : ..:..:..:..:.:..:....:..:..:.:..:..:.:..:..:..:.:..:..:..:...:..:.:.:....c......:.:.:..:..:..:..:.:...:.
->     result            : SUCCESS
->     test case         : examples/loop.lux
->     progress          : ..:..:..:.((.:..:.:.)(..:.)(.:..:.))((.:..:.:.)(.:..:.)(.:..:.)(.:..:.)(.:..:.))((.:..:.)(.:..:.)(.:..:.)(.:..:.)(.:..:.)(.:..:.)(.:..:.)(.:..:.))...:...:.:..:..:.:..:..:.:...:..:.:..:.((.i=1..:..:.:.:..z)(z..i=2..:..:.:.:..z)(z..i=3..:..:.:.:..z)(:.z..i=4..:..:.:..z:).)z.c........:..:..:..:..:.:.
->     result            : SUCCESS
->     test case         : examples/loop_fail.lux
->     progress          : ..:..:.:..:.((.i=1..:..:..z)(z..i=2...:..z)(z..i=3..:..:..z))5
->     result            : FAIL at 5:5
->     expected*
->     	
->     actual error
->     	Loop ended without match of "THIS WILL NEVER MATCH"
->     diff
->     	- 
->     	+ Loop ended without match of "THIS WILL NEVER MATCH"
->     	
->     test case         : examples/skip.lux
->     result            : SKIP as variable TEST_SUNOS is not set
->     test case         : examples/unstable.lux
->     progress          : ..:..:..:.:....7
->     result            : WARNING at 7
->     expected*
->     	bar
->     actual match_timeout
->     	
->     diff
->     	- bar
->     	+ 
->     	
->     test case         : examples/warning.lux
->     progress          : 
->     result            : WARNING
->     successful        : 3
->     skipped           : 1
->     	examples/skip.lux:6
->     warnings          : 2
->     	examples/unstable.lux:7 - Fail but UNSTABLE as variable TEST_DEVELOP is not set
->     	examples/warning.lux:3 - Trailing whitespaces
->     failed            : 3
->     	examples/error.lux:3 - fail
->     	examples/fail.lux:32 - match_timeout
->     	examples/loop_fail.lux:5:5 - Loop ended without match of "THIS WILL NEVER MATCH"
->     summary           : FAIL
->     file:///Users/hmattsso/dev/lux/lux_logs/run_2017_10_26_12_58_28_196619/lux_summary.log.html
+>     /bin/sh: line 1: lux: command not found
 >     .../lux> echo $?
->     1
+>     127
 
 <a name="../INSTALL"/>
 
