@@ -7,7 +7,7 @@
 <body>
 <h1>Lux - LUcid eXpect scripting</h1>
 
-<p>Version 1.17.4 - 2017-08-29</p>
+<p>Version 1.18 - 2017-10-30</p>
 
 <ul>
 <li><a href="#../README">Introduction</a></li>
@@ -19,7 +19,7 @@
 <li><a href="#debug_cmds">Debugger for Lux scripts</a></li>
 <li><a href="#examples">Examples</a></li>
 <li><a href="#../INSTALL">Installation</a></li>
-<li><a href="#../AUTHORS">Original author:</a></li>
+<li><a href="#../AUTHORS">Original author</a></li>
 <li><a href="#references">References</a></li>
 </ul>
 
@@ -331,42 +331,43 @@ the usage of <code>?</code>. <code>?+</code> is always used together with <code>
 
 <p><strong>-</strong> <br />
 <strong>-Regexp</strong> <br />
-Sets a failure pattern to a regular expression (see [regular
-expression][]). It is typically used to match error messages. If the
-given <code>Regexp</code> ever matches, the test case is considered to have
-failed (no further processing of the script will be performed besides
-the <code>cleanup</code>). If no <code>Regexp</code> is given, the old failure pattern is
-reset (cleared).</p>
+Sets the failure pattern for a shell to a regular expression (see
+<a href="http://www.erlang.org/doc/man/re.html#regexp_syntax" title="Erlang style regular expressions (re)">regular expression</a>). It is typically used to match error
+messages. If the given <code>Regexp</code> matches, the test case is considered
+to have failed (no further processing of the script will be performed
+besides the <code>cleanup</code>). If no <code>Regexp</code> is given, the failure pattern
+is reset (cleared).</p>
 
-<p>In the active shell, the <code>Regexp</code> is tried on the output preceding
-each successful match of expect expressions. The characters up to, but
-not including, the (successful) match are tried against the failure
-pattern. In non-active shells the <code>Regexp</code> is tried when the shell
-produces new output.</p>
+<p>The failure pattern is primarily searched for when the script
+explicitly is expecting some output. That is when a command like <code>?</code>,
+<code>??</code> or <code>???</code> is evaluated. It is also searched for when a shell
+cannot produce more output, for example when a shell exits or when
+there are no more commands to evaluate.</p>
 
 <p><strong>+</strong> <br />
 <strong>+Regexp</strong> <br />
-Sets a success pattern to a regular expression (see [regular
-expression][]). If the given <code>Regexp</code> ever matches, the test case is
-considered a success (no further processing of the script will be
-performed besides the <code>cleanup</code>). If no <code>Regexp</code> is given, the old
+Sets the success pattern for a shell to a regular expression (see
+<a href="http://www.erlang.org/doc/man/re.html#regexp_syntax" title="Erlang style regular expressions (re)">regular expression</a>). If the given <code>Regexp</code> matches, the test case
+is considered to be a success (no further processing of the script
+will be performed besides the <code>cleanup</code>). If no <code>Regexp</code> is given, the
 success pattern is reset (cleared).</p>
 
-<p>In the active shell, the <code>Regexp</code> is tried on the output preceding
-each successful match of expect expressions. The characters up to, but
-not including, the (successful) match are tried against the success
-pattern. In non-active shells the <code>Regexp</code> is tried when the shell
-produces new output.</p>
+<p>The success pattern is primarily searched for when the script
+explicitly is expecting some output. That is when a command like <code>?</code>,
+<code>??</code> or <code>???</code> is evaluated. It is also searched for when a shell
+cannot produce more output, for example when a shell exits or when
+there are no more commands to evaluate.</p>
 
 <p><strong>@</strong> <br />
 <strong>@Regexp</strong> <br />
-Sets a loop break pattern to a regular expression (see [regular
-expression][]). This statement is only valid in loops. It is typically
-used to match output from a poll like command. When the given <code>Regexp</code>
-matches, the loop is immediately exited. The execution continues with
-the first statement after the loop. The test case fails if the loop is
-exited before the break pattern is matched. If no <code>Regexp</code> is given,
-the break failure pattern is reset (cleared).</p>
+Sets a loop break pattern for a shell to a regular expression (see
+<a href="http://www.erlang.org/doc/man/re.html#regexp_syntax" title="Erlang style regular expressions (re)">regular expression</a>). This statement is only valid in loops. Even
+in nested loops. It is typically used to match output from a poll like
+command. When the given <code>Regexp</code> matches, the loop is immediately
+exited. The execution continues with the first statement after the
+loop. The test case fails if the loop is exited before the break
+pattern is matched. If no <code>Regexp</code> is given, the loop break pattern is
+reset (cleared).</p>
 
 <p><strong>[endshell]</strong> <br />
 <strong>[endshell Regexp]</strong>
@@ -1549,8 +1550,8 @@ succeeds or fails.</p>
 
 <p>Test cases are executed until they succeed or fail. The script is
 aborted at the first failure. Which may occur when the expected output
-not has matched within the given timeout or when the fail pattern has
-matched. A fail pattern is local to the given shell and will cause
+not has matched within the given timeout or when the failure pattern has
+matched. A failure pattern is local to the given shell and will cause
 abort when it matches.</p>
 
 <p>The (match) timeout may explicitly be set within the script, in a
@@ -1728,14 +1729,14 @@ a hetrogenous lab environment:</p>
 
 <blockquote>
 <pre><code>.../lux&gt; lux examples
-summary log       : /Users/hmattsso/dev/lux/lux_logs/run_2017_08_23_11_45_42_637562/lux_summary.log
+summary log       : /Users/hmattsso/dev/lux/lux_logs/run_2017_10_26_09_08_26_811050/lux_summary.log
 test case         : examples/calc.lux
-progress          : ..:...:.:...:..:.:.:....:..:..:..(....:..:.:.:...)(.:..:..)...:..:..:..(.:..:..)..(.:..:..)(....:.:..:...)(..:..)..(.:..:..)......:..:...
+progress          : ..:.:..:..:.:...:..:.:.:....:..:..:..(....:..:.:.:...)(.:..:..)...:..:..:..(..:.:..)..(.:..:..)(....:.:.:..:...)(.:..:..)..(.:..:..)......:..:...
 result            : SUCCESS
 test case         : examples/error.lux
 result            : FAIL as required variable MAKE is not set
 test case         : examples/fail.lux
-progress          : ..:...:.:...:..:.:.:..:..:.:....:..:..32C..:...:.:..:..:.:..:.:..:.:..:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.
+progress          : ..:...:.:...:..:.:.:..:..:.:....:..:..32C..:...:.:..:..:..:.:..:.:..:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.
 result            : FAIL at 32
 expected*
 19
@@ -1752,13 +1753,13 @@ diff
 + 4&gt; 
 
 test case         : examples/intro.lux
-progress          : ..:..:..:..:..:....:..:..:.:..:..:.:..:..:..:.:..:..:.:..:.:...:..:.:.:....c....:..:..:...:.:..:..:.:..:..:.
+progress          : ..:..:..:..:.:..:....:...:.:..:..:.:..:..:.:..:.:..:..:....:..:.:.:....c......:.:.:..:..:..:.:..:..:..:.
 result            : SUCCESS
 test case         : examples/loop.lux
-progress          : ..:..:..:.((.:..:.)(.:..:.)(.:..:.))((.:..:.)(.:..:.)(.:..:.)(.:..:.)(.:..:.))((.:.:..:.)(.:..:.)(.:..:.)(.:..:.)(.:..:.)(.:..:.)(.:..:.)(.:..:.))...:..:..:...:.:.:..:.:..:...:..:..:.((.i=1..:..:.:.:..z)(z..i=2..:..:.:.:..z)(z..i=3..:..:.:.:..z)(:.z..i=4..:..:.:.:..z))c........:..:..:..:..:.:.
+progress          : ..:..:..:.:.((.:..:.)(.:..:.)(.:.:..:.))((.:..:.)(.:..:.)(.:..:.)(.:..:.)(.:..:.))((.:.:..:.)(.:.:..)(.:.:..:.)(.:..:.)(.:..:.)(.:..:.)(.:..:.)(.:..:.))...:..:..:..:..:.:..:.:..:...:..:..:.((.i=1..:..:.:.:..z)(z..i=2...:.:.:.:..z)(z..i=3..:..:.:.:..z)(:.z..i=4..:..:.:.:..z))z.c........:...:.:..:..:.:.
 result            : SUCCESS
 test case         : examples/loop_fail.lux
-progress          : ..:..:..:.((.i=1..:..:..z)(z..i=2...:..z)(z..i=3..:..:..z))5
+progress          : ..:..:..:.((.i=1..:..:..z)(z..i=2..:..:..z)(z..i=3..:..:..z))5
 result            : FAIL at 5:5
 expected*
 
@@ -1771,7 +1772,7 @@ diff
 test case         : examples/skip.lux
 result            : SKIP as variable TEST_SUNOS is not set
 test case         : examples/unstable.lux
-progress          : ..:..:..:....7
+progress          : ..:..:.:..:....7
 result            : WARNING at 7
 expected*
 bar
@@ -1795,7 +1796,7 @@ examples/error.lux:3 - fail
 examples/fail.lux:32 - match_timeout
 examples/loop_fail.lux:5:5 - Loop ended without match of "THIS WILL NEVER MATCH"
 summary           : FAIL
-file:///Users/hmattsso/dev/lux/lux_logs/run_2017_08_23_11_45_42_637562/lux_summary.log.html
+file:///Users/hmattsso/dev/lux/lux_logs/run_2017_10_26_09_08_26_811050/lux_summary.log.html
 .../lux&gt; echo $?
 1
 </code></pre>
@@ -1928,13 +1929,13 @@ open ../lux.html
 <p><a name="../AUTHORS"/></p>
 </blockquote>
 
-<p>Original author:</p>
+<h2>Original author</h2>
 
 <ul>
 <li>Håkan Mattsson</li>
 </ul>
 
-<p>Contributors:</p>
+<h2>Contributors</h2>
 
 <ul>
 <li>Jan Lindblad (implemented a predecessor to Lux, called Qmscript, as a Python plugin to QMTest)</li>
