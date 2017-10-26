@@ -538,17 +538,15 @@ shell_eval(#cstate{name = Name} = C0,
             true = is_binary(Arg), % Assert
             send_to_port(C, Arg);
         expect when Arg =:= reset ->
-            C2 = match_patterns(C, C#cstate.actual),
-            reset_output_buffer(C2, script);
+            reset_output_buffer(C, script);
         expect when element(1, Arg) =:= endshell ->
-            C2 = match_patterns(C, C#cstate.actual),
             single = element(2, Arg), % Assert
             {ExpectTag, RegExp} = extract_regexp(Arg),
-            clog(C2, ExpectTag, "\"endshell retcode=~s\"",
+            clog(C, ExpectTag, "\"endshell retcode=~s\"",
                  [lux_utils:to_string(RegExp)]),
-            dlog(C2, ?dmore, "expected=regexp (~p)", [element(1, Arg)]),
-            C3 = start_timer(C2),
-            C3#cstate{state_changed = true, expected = Cmd};
+            dlog(C, ?dmore, "expected=regexp (~p)", [element(1, Arg)]),
+            C2 = start_timer(C),
+            C2#cstate{state_changed = true, expected = Cmd};
         expect when element(2, Arg) =:= expect_add;
                     element(2, Arg) =:= expect_add_strict ->
             %% Add alternate regexp
@@ -567,57 +565,52 @@ shell_eval(#cstate{name = Name} = C0,
         expect when C#cstate.expected =:= undefined andalso
                     C#cstate.pre_expected =:= [] ->
             %% Single regexp
-            C2 = match_patterns(C, C#cstate.actual),
             true = lists:member(element(2, Arg), [single,multi]), % Assert
             {ExpectTag, RegExp} = extract_regexp(Arg),
-            clog(C2, ExpectTag, "\"~s\"", [lux_utils:to_string(RegExp)]),
-            dlog(C2, ?dmore, "expected=regexp (expect)", []),
-            C3 = start_timer(C2),
-            C3#cstate{state_changed = true, expected = Cmd};
+            clog(C, ExpectTag, "\"~s\"", [lux_utils:to_string(RegExp)]),
+            dlog(C, ?dmore, "expected=regexp (expect)", []),
+            C2 = start_timer(C),
+            C2#cstate{state_changed = true, expected = Cmd};
         expect when element(2, Arg) =:= multi,
                     C#cstate.pre_expected =/= [] ->
             %% Multiple regexps
-            C2 = match_patterns(C, C#cstate.actual),
-            Tag = element(2, (hd(C2#cstate.pre_expected))#cmd.arg),
+            Tag = element(2, (hd(C#cstate.pre_expected))#cmd.arg),
             {_, RegExp} = extract_regexp(Arg),
-            clog(C2, Tag, "\"~s\"", [lux_utils:to_string(RegExp)]),
+            clog(C, Tag, "\"~s\"", [lux_utils:to_string(RegExp)]),
             PreExpected = [Cmd | C#cstate.pre_expected],
-            {ok, NewCmd, NewRegExp} = rebuild_multi_regexps(C2, PreExpected),
-            clog(C2, perms, "\"~s\"", [lux_utils:to_string(NewRegExp)]),
-            dlog(C2, ?dmore, "expected=regexp (expect)", []),
-            C3 = start_timer(C2),
-            C3#cstate{latest_cmd = NewCmd,
+            {ok, NewCmd, NewRegExp} = rebuild_multi_regexps(C, PreExpected),
+            clog(C, perms, "\"~s\"", [lux_utils:to_string(NewRegExp)]),
+            dlog(C, ?dmore, "expected=regexp (expect)", []),
+            C2 = start_timer(C),
+            C2#cstate{latest_cmd = NewCmd,
                       state_changed = true,
                       expected = NewCmd,
                       pre_expected = []};
         fail ->
-            C2 = match_patterns(C, C#cstate.actual),
             PatCmd =
                 if
                     Arg =:= reset -> undefined;
                     true          -> Cmd
                 end,
             {_, RegExp} = extract_regexp(Arg),
-            clog(C2, fail, "pattern ~p", [lux_utils:to_string(RegExp)]),
-            Pattern = #pattern{cmd = PatCmd, cmd_stack = C2#cstate.cmd_stack},
-            C2#cstate{state_changed = true, fail = Pattern};
+            clog(C, fail, "pattern ~p", [lux_utils:to_string(RegExp)]),
+            Pattern = #pattern{cmd = PatCmd, cmd_stack = C#cstate.cmd_stack},
+            C#cstate{state_changed = true, fail = Pattern};
         success ->
-            C2 = match_patterns(C, C#cstate.actual),
             PatCmd =
                 if
                     Arg =:= reset -> undefined;
                     true          -> Cmd
                 end,
             {_, RegExp} = extract_regexp(Arg),
-            clog(C2, success, "pattern ~p", [lux_utils:to_string(RegExp)]),
+            clog(C, success, "pattern ~p", [lux_utils:to_string(RegExp)]),
             Pattern = #pattern{cmd = PatCmd,
-                               cmd_stack = C2#cstate.cmd_stack},
-            C2#cstate{state_changed = true, success = Pattern};
+                               cmd_stack = C#cstate.cmd_stack},
+            C#cstate{state_changed = true, success = Pattern};
         break ->
-            C2 = match_patterns(C, C#cstate.actual),
             {_, RegExp} = extract_regexp(Arg),
-            clog(C2, break, "pattern ~p", [lux_utils:to_string(RegExp)]),
-            [Loop | LoopStack] = C2#cstate.loop_stack,
+            clog(C, break, "pattern ~p", [lux_utils:to_string(RegExp)]),
+            [Loop | LoopStack] = C#cstate.loop_stack,
             Loop2 =
                 if
                     Loop#loop.mode =:= break ->
@@ -627,7 +620,7 @@ shell_eval(#cstate{name = Name} = C0,
                     true ->
                         Loop#loop{mode = Cmd}
                 end,
-            C2#cstate{state_changed = true, loop_stack = [Loop2|LoopStack]};
+            C#cstate{state_changed = true, loop_stack = [Loop2|LoopStack]};
         sleep ->
             Secs = Arg,
             clog(C, sleep, "(~p seconds)", [Secs]),
@@ -809,7 +802,7 @@ expect(#cstate{state_changed = true,
                actual = Actual,
                timed_out = TimedOut} = C0) ->
     %% Something has changed
-    C = match_patterns(C0#cstate{state_changed = false}, Actual),
+    C = C0#cstate{state_changed = false},
     case Expected of
         _ when C#cstate.wakeup =/= undefined ->
             %% Sleeping
